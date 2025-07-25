@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <title>Full Stack Login</title>
+    </head>
+    <body>
+        <div>
+            SignUp
+            <input
+                id="signup-username"
+                type="text"
+                name="username"
+                placeholder="Username"
+            />
+            <input
+                id="signup-password"
+                type="password"
+                name="password"
+                placeholder="Password"
+            />
+            <button onClick="signup()">Submit</button>
+        </div>
+        <div>
+            SignIn
+            <input
+                id="signin-username"
+                type="text"
+                name="username"
+                placeholder="Username"
+            />
+            <input 
+            id="signin-password"
+            type="password" 
+            name="password" 
+            placeholder="Password" 
+            />
+            <button onClick="signin()">Submit</button>
+        </div>
+        <div>
+            UserInformation:
+            <div id="information"></div>
+        </div>
+        <div>
+            <button onClick="logOut()">Logout</button>
+        </div>
+
+        <script>
+            async function signup() {
+                try {
+                    const username = document.querySelector("#signup-username").value;
+                    const password = document.querySelector("#signup-password").value;
+
+                    await axios.post("http://localhost:3000/signup", {
+                        username: username,
+                        password: password,
+                    });
+                    alert("You are signed up successfully!");
+                } catch (error) {
+                    alert("Signup failed: " + error.response?.data?.message || error.message);
+                }
+            }
+
+            async function signin() {
+                try {
+                    const username = document.querySelector("#signin-username").value;
+                    const password = document.querySelector("#signin-password").value;
+
+                    const response = await axios.post("http://localhost:3000/signin", {
+                        username: username,
+                        password: password,
+                    });
+
+                    localStorage.setItem("token", response.data.token);
+
+                    alert("You are signed in successfully!");
+                } catch (error) {
+                    alert("Signin failed: " + (error.response?.data?.message || error.message));
+                }
+            }
+        </script>
+    </body>
+</html>

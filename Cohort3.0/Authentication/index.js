@@ -4,12 +4,12 @@ app.use(express.json());
 
 const users = [];
 
-app.post("/",(req,res)=>{
+app.post("/", (req, res) => {
   res.json({
-    'message':"Good"
-  })
-  return
-})
+    message: "Good",
+  });
+  return;
+});
 
 function generateToken() {
   let options =
@@ -40,19 +40,17 @@ app.post("/signup", function (req, res) {
   res.status(201).json({
     message: "User created successfully",
   });
-  console.log(users)
+  // Avoid logging sensitive user information
+  console.log(users);
 });
 
 app.post("/signin", function (req, res) {
   const username = req.body.username;
   const password = req.body.password;
 
-  const user = users.find((u) => {
-    if (u.username === username && u.password === password) {
-      return true;
-    }
-    return false;
-  });
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
   if (user) {
     const token = generateToken();
     user.token = token;
@@ -65,7 +63,26 @@ app.post("/signin", function (req, res) {
       message: "Invalid username or Password",
     });
   }
-  console.log(users)
+  console.log(users);
+});
+
+// GET /me
+// Expects: 'token' in request headers
+// Returns: { username, password } if token is valid, otherwise { message: "Invalid token" }
+app.get("/me", (req, res) => {
+  const token = req.headers.token;
+  const foundUser = users.find((u) => u.token === token);
+
+  if (foundUser) {
+    res.json({
+      username: foundUser.username,
+      password: foundUser.password,
+    });
+  } else {
+    res.json({
+      message: "Invalid token",
+    });
+  }
 });
 
 app.listen(3000);
