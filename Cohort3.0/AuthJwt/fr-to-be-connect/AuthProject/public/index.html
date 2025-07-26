@@ -44,7 +44,7 @@
             <div id="information"></div>
         </div>
         <div>
-            <button onClick="logOut()">Logout</button>
+            <button onClick="logout()">Logout</button>
         </div>
 
         <script>
@@ -79,6 +79,21 @@
                 } catch (error) {
                     alert("Signin failed: " + (error.response?.data?.message || error.message));
                 }
+            }
+
+            async function getUserInformation(){
+                const response= await axios.get("http://localhost:3000/me", {
+                    headers:{
+                        token:localStorage.getItem("token")
+                    }
+                });
+                document.querySelector("#information").innerHTML="usename : "+ response.data.username + " password :"+ response.data.password
+            }
+
+            getUserInformation();
+
+            function logout(){
+                token:localStorage.removeItem("token");
             }
         </script>
     </body>
